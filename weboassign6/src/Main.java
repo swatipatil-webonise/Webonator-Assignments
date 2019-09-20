@@ -5,17 +5,16 @@ import impl.philosopherPbmImpl.Philosopher;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 
 public class Main {
-    private static FileServices services = new FileServices();
-
+    private static FileServices fileServices = new FileServices();
     public static void main(String[] args) {
         try {
+            //The file handling and exception handling problem starts....
             String searchWord = "swati";
-            services.searchWord(new BufferedReader(new FileReader("/home/webonise/input.txt")), searchWord);
-            services.copyOneFileIntoOther(new BufferedReader(new FileReader("/home/webonise/input.txt")), new FileWriter("/home/webonise/output.txt"));
-
+            fileServices.searchWord(new BufferedReader(new FileReader("/home/webonise/input.txt")), searchWord);
+            fileServices.copyOneFileIntoOther(new BufferedReader(new FileReader("/home/webonise/input.txt")), new FileWriter("/home/webonise/output.txt"));
+            //The Multithreading prblem starts...
             System.out.println("\nPhilosopher's problem starts . ");
             ChopStick chopStick = new ChopStick();
             Thread philosopher1 = new Thread(new Philosopher(chopStick), "Sunny");
@@ -32,7 +31,5 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 }

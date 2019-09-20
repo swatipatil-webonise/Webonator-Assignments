@@ -2,7 +2,6 @@ package impl.philosopherPbmImpl;
 
 public class ChopStick {
     public int chopsticks;
-
     public ChopStick() {
         this.chopsticks = 3;
     }

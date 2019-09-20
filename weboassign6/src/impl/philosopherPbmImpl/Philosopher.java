@@ -1,8 +1,7 @@
 package impl.philosopherPbmImpl;
 
 public class Philosopher implements Runnable {
-    ChopStick chopStick;
-
+    public ChopStick chopStick;
     public Philosopher(ChopStick chopStick) {
         this.chopStick = chopStick;
     }
@@ -17,5 +16,4 @@ public class Philosopher implements Runnable {
             chopStick.useChopStick();
         }
     }
-
 }
