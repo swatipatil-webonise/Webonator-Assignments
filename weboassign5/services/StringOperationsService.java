@@ -22,9 +22,7 @@ public class StringOperationsService {
     public void doStringInputOutput() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter the string from which you want to remove duplicates : ");
-        String inputString = scan.nextLine();
-        System.out.println(inputString);
-        inputString = removeDuplicates(inputString);
+        inputString = removeDuplicates(scan.nextLine());
         System.out.println("After removing duplicates : " + inputString);
     }
 }
