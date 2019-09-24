@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class CollectionAndStringOperationApp {
+
     private static CollectionService collectionService = new CollectionService();
     private static StringOperationsService stringOperationService = new StringOperationsService();
     private static Scanner scan = new Scanner(System.in);
@@ -15,8 +16,7 @@ public class CollectionAndStringOperationApp {
         ArrayList<Object> inputList = new ArrayList();
         HashMap<Object, Object> inputMap = new HashMap();
         char checkWhetherContinueOrNot = 'y';
-        System.out.println("You are performing arraylist and hashmap traversing.");
-        System.out.println("Enter the items arraylist : ");
+        System.out.println("You are performing arraylist and hashmap traversing\nEnter the items arraylist : ");
         do {
             inputList.add(scan.next());
             System.out.println("Would you like to enter new item(y/n) : ");
@@ -31,8 +31,7 @@ public class CollectionAndStringOperationApp {
         collectionService.traverseArrayList(inputList);
         collectionService.traverseHashMap(inputMap);
         //String operation starts.....
-        System.out.println("\nYou are performing string operation.");
-        System.out.println("Enter the string from which you want to remove duplicates : ");
-        System.out.println("After removing duplicates string is : " + stringOperationService.removeDuplicates(scan.nextLine()));
+        System.out.println("\nYou are performing string operation\nEnter the string from which you want to remove duplicates : ");
+        stringOperationService.removeDuplicates("I am swati , I am an employee of webonise.");
     }
 }
