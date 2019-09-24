@@ -6,17 +6,15 @@ import java.util.Scanner;
 
 public class StringOperationsService {
 
-    private Scanner scan = new Scanner(System.in);
-
-    public String removeDuplicates(String stringToRemoveDuplicates) {
+   public void removeDuplicates(String stringToRemoveDuplicates) {
         LinkedHashSet<String> inputSet = new LinkedHashSet<>();
         for(String stringSlice : stringToRemoveDuplicates.split(" ")){
             inputSet.add(stringSlice);
         }
-        return stringToRemoveDuplicates;
+        stringToRemoveDuplicates = "";
+        for(String itemFromInputSet : inputSet) {
+            stringToRemoveDuplicates = stringToRemoveDuplicates + " " + itemFromInputSet;
+        }
+        System.out.println("After removing duplicates string is : " + stringToRemoveDuplicates);
     }
 }
-
-
-
-
