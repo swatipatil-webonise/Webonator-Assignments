@@ -3,13 +3,13 @@ package com.webonise.controller;
 import com.webonise.model.Student;
 import com.webonise.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController
-@RequestMapping(value = "/student-management", produces = {MediaType.APPLICATION_JSON_VALUE})
+@Controller
+//@RequestMapping(value = "/student-management", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class FirstCrudController {
 
     @Autowired
@@ -23,15 +23,66 @@ public class FirstCrudController {
         this.repository = repository;
     }
 
-    @GetMapping(value = "/students")
+   /* @GetMapping(value = "/students")
     public List<Student> getAllStudents() {
         return repository.findAll();
+    }*/
+
+
+
+
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public String listEmployees(ModelMap map) {
+
+        map.addAttribute("student", new Student());
+        map.addAttribute("studentList", repository.findAll());
+
+        return "editStudentList";
     }
 
-    @PostMapping("/students")
-    public Student createOrSaveStudent(@RequestBody Student student) {
-        return repository.save(student);
+    @RequestMapping("/delete{id}")
+    public String deleteStudent(@PathVariable int id) {
+        repository.deleteById(id);
+        return "redirect: /list";
     }
+
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public String addEmployee(
+            @ModelAttribute(value = "student") Student student,
+            BindingResult result) {
+        repository.save(student);
+        return "redirect: /list";
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public String save(@ModelAttribute(value = "student") Student student , BindingResult result) {
+        repository.save(student);
+        return "redirect: /list";
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   /* @RequestMapping(value = "save", method = RequestMethod.POST)
+    public String save(@ModelAttribute("product") Product product) {
+        productService.update(product);
+        return "product/success";
+    }*/
+
+
+
+
 
     @GetMapping("/students/{id}")
     public Student getStudentByID(@PathVariable int id) {
@@ -51,8 +102,5 @@ public class FirstCrudController {
         });
     }
 
-    @DeleteMapping("/students/{id}")
-    public void deleteStudent(@PathVariable int id) {
-        repository.deleteById(id);
-    }
+
 }

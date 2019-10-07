@@ -1,0 +1,3 @@
+com/webonise/repository/StudentRepository.class
+com/webonise/model/Student.class
+com/webonise/controller/FirstCrudController.class
