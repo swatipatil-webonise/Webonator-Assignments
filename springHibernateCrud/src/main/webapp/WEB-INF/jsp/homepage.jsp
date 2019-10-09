@@ -6,7 +6,7 @@
 <body>
 	<div align="center">
 		<h1>Welcome to student crud app..</h1><br>
-	    <a href="/enterStudent">Add new student</a><br><br>
+	    <a href="/enter">Add new student</a><br><br>
 	 	<table border="1">
 			<th>Name</th>
 			<th>Email</th>
@@ -15,14 +15,12 @@
 			<th>Update</th>
 			<th>Delete</th>
 			<c:forEach var="student" items="${listStudent}">
-				<tr>
-					<td>${student.name}</td>
+				<tr><td>${student.name}</td>
 					<td>${student.email}</td>
 					<td>${student.address}</td>
 					<td>${student.telephone}</td>
-					<td><a href="/updateStudent?id=${student.id}">Update</a></td>
-					<td><a href="/deleteStudent?id=${student.id}">Delete</a></td>
-				</tr>
+					<td><a href="/update?id=${student.id}">Update</a></td>
+					<td><a href="/delete?id=${student.id}">Delete</a></td></tr>
 			</c:forEach>
 		</table>
 	</div>

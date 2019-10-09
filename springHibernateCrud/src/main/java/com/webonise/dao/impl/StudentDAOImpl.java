@@ -16,27 +16,58 @@ public class StudentDAOImpl implements StudentDAO {
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	private Logger logger = LogManager.anonymousLogger();
+
 	public void insertStudent(Student student) {
-		sessionFactory.getCurrentSession().saveOrUpdate(student);
+		try {
+			sessionFactory.getCurrentSession().saveOrUpdate(student);
+		} catch(SQLException e) {
+			logger.fatal("Unable to execute insert query.", e);
+		} catch(Exception e) {
+			logger.fatal("Exception occured at insertStudent() in StudentDaoImpl.class.", e);
+		}
 	}
 
 	public List<Student> getAllStudents() {
-		return sessionFactory.getCurrentSession().createQuery("from Student").list();
+		try {
+			return sessionFactory.getCurrentSession().createQuery("from Student").list();
+		} catch(SQLException e) {
+			logger.fatal("Unable to execute select * query.", e);
+		} catch(Exception e) {
+			logger.fatal("Exception occured at getAllStudents() in StudentDaoImpl.class.", e);
+		}
+		return null;
 	}
 
 	public void deleteStudent(Integer studentId) {
-		Student student = (Student) sessionFactory.getCurrentSession().load(Student.class, studentId);
-		if (null != student) {
+		try {
+			Student student = (Student) sessionFactory.getCurrentSession().load(Student.class, studentId);
 			this.sessionFactory.getCurrentSession().delete(student);
+		} catch(SQLException e) {
+			logger.fatal("Unable to execute delete query.", e);
+		} catch(Exception e) {
+			logger.fatal("Exception occured at deleteStudent() in StudentDaoImpl.class.", e);
 		}
 	}
 
 	public Student getStudent(int studentId) {
-		return (Student) sessionFactory.getCurrentSession().get(Student.class, studentId);
+		try {
+			return (Student) sessionFactory.getCurrentSession().get(Student.class, studentId);
+		} catch(SQLException e) {
+			logger.fatal("Unable to execute select query.", e);
+		} catch(Exception e) {
+			logger.fatal("Exception occured at getStudent() in StudentDaoImpl.class.", e);
+		}
 	}
 
 	public Student updateStudent(Student student) {
-		sessionFactory.getCurrentSession().update(student);
+		try {
+			sessionFactory.getCurrentSession().update(student);
+		} catch(SQLException e) {
+			logger.fatal("Unable to execute update query.", e);
+		} catch(Exception e) {
+			logger.fatal("Exception occured at updateStudent() in StudentDaoImpl.class.", e);
+		}
 		return student;
 	}
 }

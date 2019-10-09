@@ -26,7 +26,7 @@ public class StudentController {
         return model;
     }
 
-    @RequestMapping(value = "/enterStudent", method = RequestMethod.GET)
+    @RequestMapping(value = "/enter")
     public ModelAndView enterStudent(ModelAndView model) {
         Student student = new Student();
         model.addObject("student", student);
@@ -34,24 +34,20 @@ public class StudentController {
         return model;
     }
 
-    @RequestMapping(value = "/insertStudent", method = RequestMethod.POST)
+    @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public ModelAndView insertStudent(@ModelAttribute Student student) {
-        if (student.getId() == 0) {
-            studentService.insertStudent(student);
-        } else {
-            studentService.updateStudent(student);
-        }
-        return new ModelAndView("redirect:/");
+          studentService.insertStudent(student);
+          return new ModelAndView("redirect:/");
     }
 
-    @RequestMapping(value = "/deleteStudent", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete")
     public ModelAndView deleteStudent(HttpServletRequest request) {
         int studentId = Integer.parseInt(request.getParameter("id"));
         studentService.deleteStudent(studentId);
         return new ModelAndView("redirect:/");
     }
 
-    @RequestMapping(value = "/updateStudent", method = RequestMethod.GET)
+    @RequestMapping(value = "/update")
     public ModelAndView updateStudent(HttpServletRequest request) {
         int studentId = Integer.parseInt(request.getParameter("id"));
         Student student = studentService.getStudent(studentId);

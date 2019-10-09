@@ -7,7 +7,7 @@
 <body>
     <div align="center">
         <h1>New/Edit Student</h1>
-        <form:form action="insertStudent" method="post" modelAttribute="student">
+        <form:form action="insert" method="post" modelAttribute="student">
         <table>
             <form:hidden path="id"/>
             <tr>
