@@ -3,7 +3,11 @@ package com.webonise.controller;
 import com.webonise.model.Student;
 import com.webonise.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @RestController
@@ -13,27 +17,27 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
-    @GetMapping(value = "/allStudents")
+    @GetMapping(value = "/all")
     public List<Student> getAllStudents() {
         return studentService.getAllStudents();
     }
 
-    @PostMapping("/insertStudent")
-    public Student createOrSaveStudent(@RequestBody Student student) {
-        return studentService.createOrSaveStudent(student);
+    @PostMapping("/insert")
+    public Student saveStudent(@RequestBody Student student) {
+        return studentService.saveStudent(student);
     }
 
-    @GetMapping("/getStudent/{id}")
+    @GetMapping("/get/{id}")
     public Student getStudentByID(@PathVariable int id) {
         return studentService.getStudentByID(id);
     }
 
-    @PutMapping("/updateStudent/{id}")
-    public Student updateStudent(@RequestBody Student newStudent, @PathVariable int id) {
-        return studentService.getStudent(newStudent, id);
+    @PutMapping("/update")
+    public Student updateStudent(@RequestBody Student newStudent) {
+        return studentService.updateStudent(newStudent);
     }
 
-    @DeleteMapping("/deleteStudent/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteStudent(@PathVariable int id) {
         studentService.deleteStudent(id);
     }
