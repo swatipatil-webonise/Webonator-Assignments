@@ -23,13 +23,17 @@ public class StudentController {
 	@RequestMapping("/")
 	public String getAll(ModelMap model) {
 		List<Student> list = studentService.findAll();
-		model.put("list", list);
-		int max = studentService.getMax() + 1;
-		if (max == -1) {
-			logger.info("Max of student is not initialized properly check the database records.");
-			return "";
+		try {
+			model.put("list", list);
+			int max = studentService.getMax() + 1;
+			if (max == -1) {
+				logger.info("Max of student is not initialized properly check the database records.");
+				return "";
+			}
+			model.put("max", max);
+		} catch (Exception exception) {
+			logger.info("Exception occured while updating modeview object in getAll() of controller.");
 		}
-		model.put("max", max);
 		return "allStudents.jsp";
 	}
 
