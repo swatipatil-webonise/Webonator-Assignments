@@ -16,52 +16,52 @@ public class StudentService {
 
 	private Logger logger = LogManager.getLogManager().getLogger("");
 
-	public List<Student> findAll() {
-		List<Student> list = null;
+	public List<Student> findAll() throws Exception {
 		try {
-			list = (List<Student>) studentDao.findAll();
+			return (List<Student>) studentDao.findAll();
 		} catch (NullPointerException exception) {
 			logger.info("Students are not selected");
+			throw new NullPointerException("Student list is not initialized properly.");
 		} catch (Exception exception) {
 			logger.info("Exception occured while selecting all students from database.");
+			throw new Exception("FindAll was unable to excute.", exception);
 		}
-		return list;
 	}
 
-	public void save(Student student) {
+	public void save(Student student) throws Exception {
 		try {
 			studentDao.save(student);
 		} catch (Exception exception) {
 			logger.info("Exception occured while inserting student into database.");
+			throw new Exception("Save is unable to execute.", exception);
 		}
 	}
 
-	public Student findById(int id) {
-		Student student = null;
+	public Student findById(int id) throws Exception {
 		try {
-			student = studentDao.findById(id).orElse(null);
+			return studentDao.findById(id).orElse(null);
 		} catch (Exception exception) {
-			logger.info("Exception occured while selecting " + id + "th student from database.");
+			logger.info("Exception occured while selecting single student from database.");
+			throw new Exception("FindById was unable to execute.", exception);
 		}
-		return student;
 	}
 
-	public void deleteById(int id) {
+	public void deleteById(int id) throws Exception {
 		try {
 			studentDao.deleteById(id);
 		} catch (Exception exception) {
-			logger.info("Exception occured while deleting " + id + "th student from database.");
+			logger.info("Exception occured while deleting student from database.");
+			throw new Exception("DeleteById was unable to execute.", exception);
 		}
 
 	}
 
-	public int getMax() {
-		int count = -1;
+	public int getMax() throws Exception {
 		try {
-			count = (int) studentDao.count();
+			return (int) studentDao.count();
 		} catch (Exception exception) {
 			logger.info("Exception occured while getting total count from database.");
+			throw new Exception("Check the total number of record in table.", exception);
 		}
-		return count;
 	}
 }

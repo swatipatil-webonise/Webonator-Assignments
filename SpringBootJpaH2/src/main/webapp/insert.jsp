@@ -4,7 +4,7 @@
 <html>
 	<body>
 		<center>
-			<form action="insertStudent"><br/><br/><br/>
+			<form action="add"><br/><br/><br/>
 				<h2>Add new student here....<br/><br/></h2>
 				<table>
 					<tr><td>Student ID : </td><td><input type="text" name="id" value=" <%= request.getParameter("max") %>" readonly="readonly"></td></tr>

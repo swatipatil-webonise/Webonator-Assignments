@@ -1,6 +1,7 @@
 package com.webonise.demo.controller;
 
 import java.util.List;
+
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,34 +21,31 @@ public class StudentController {
 
 	private Logger logger = LogManager.getLogManager().getLogger("");
 
-	@RequestMapping("/")
+	@RequestMapping("/all")
 	public String getAll(ModelMap model) {
-		List<Student> list = studentService.findAll();
 		try {
+			List<Student> list = studentService.findAll();
 			model.put("list", list);
-			int max = studentService.getMax() + 1;
-			if (max == -1) {
-				logger.info("Max of student is not initialized properly check the database records.");
-				return "";
-			}
-			model.put("max", max);
+			model.put("max", studentService.getMax() + 1);
 		} catch (Exception exception) {
 			logger.info("Exception occured while updating modeview object in getAll() of controller.");
 		}
 		return "allStudents.jsp";
 	}
 
-	@RequestMapping("/insertStudent")
+	@RequestMapping("/add")
 	public ModelAndView addStudent(Student student) {
-		if (student == null) {
-			logger.info("Student is not initalized properly while coming through request for insert operation.");
-		} else {
+		try {
 			studentService.save(student);
+		} catch (NullPointerException exception) {
+			logger.info("Student coming from request might not have been initailized.");
+		} catch (Exception exception) {
+			logger.info("StudentController is not able to perform save operation.");
 		}
-		return new ModelAndView("redirect:/");
+		return new ModelAndView("redirect:/all");
 	}
 
-	@RequestMapping("/getStudent")
+	@RequestMapping("/get")
 	public ModelAndView getStudent(@RequestParam int id) {
 		ModelAndView model = null;
 		try {
@@ -58,32 +56,26 @@ public class StudentController {
 		return model;
 	}
 
-	@RequestMapping(value = "/updateStudent")
+	@RequestMapping(value = "/update")
 	public ModelAndView updateStudent(Student student) {
-		ModelAndView model = null;
 		try {
-			if (student == null) {
-				logger.info("Student is not initalized properly while coming through request for update operation.");
-			} else {
-				studentService.deleteById(student.getId());
-				studentService.save(student);
-				model = new ModelAndView("redirect:/");
-			}
+			studentService.deleteById(student.getId());
+			studentService.save(student);
+		} catch (NullPointerException exception) {
+			logger.info("Student is not initalized properly while coming through request for update operation.");
 		} catch (Exception exception) {
 			logger.info("Exception occured while redirecting homepage after update operation from controller.");
 		}
-		return model;
+		return new ModelAndView("redirect:/all");
 	}
 
-	@RequestMapping("/deleteStudent")
+	@RequestMapping("/delete")
 	public ModelAndView deleteStudent(@RequestParam int id) {
-		ModelAndView model = null;
 		try {
 			studentService.deleteById(id);
-			model = new ModelAndView("redirect:/");
 		} catch (Exception exception) {
 			logger.info("Exception occured while redirecting homepage after delete operation from controller.");
 		}
-		return model;
+		return new ModelAndView("redirect:/all");
 	}
 }

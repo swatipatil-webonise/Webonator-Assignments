@@ -4,7 +4,7 @@
 <html>
 	<body>
 		<center>
-			<form action="updateStudent"><br/><br/><br/>
+			<form action="update"><br/><br/><br/>
 				<h2>Update student here....<br/><br/></h2>
 				<table>
 					<tr><td>Student ID : </td><td><input type="text" name="id" value="${student.id }" readonly="readonly"></td></tr>

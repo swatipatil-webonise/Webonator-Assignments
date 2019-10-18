@@ -18,8 +18,8 @@
 						<td>${student.id}</td>
 						<td>${student.name}</td>
 						<td>${student.age}</td>
-						<td><a href="/getStudent?id=${student.id}">Update</a></td>
-						<td><a href="/deleteStudent?id=${student.id}">Delete</a></td>
+						<td><a href="/get?id=${student.id}">Update</a></td>
+						<td><a href="/delete?id=${student.id}">Delete</a></td>
 					</tr>
 				</c:forEach>
 			</table>
