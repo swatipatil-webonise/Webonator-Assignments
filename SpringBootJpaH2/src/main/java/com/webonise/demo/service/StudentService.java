@@ -53,7 +53,6 @@ public class StudentService {
 			logger.info("Exception occured while deleting student from database.");
 			throw new Exception("DeleteById was unable to execute.", exception);
 		}
-
 	}
 
 	public int getMax() throws Exception {
