@@ -2,6 +2,7 @@ package com.webonise.controller;
 
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +18,10 @@ import com.webonise.service.UserService;
 @RequestMapping("/users/")
 public class UserController {
 	
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
 
-    @PostMapping("/")
+	@PostMapping("/")
     public User add(@RequestBody User user) {
         return userService.save(user);
     }
@@ -35,8 +36,10 @@ public class UserController {
         return userService.deleteById(id);
     }
 
+    @Scheduled(fixedRate = 2000)
     @GetMapping("/")
     public Map<String, User> get() {
         return userService.findAll();
     }	
 }
+
