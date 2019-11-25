@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/")
-    public Map<String, User> all() {
+    public Map<String, User> get() {
         return userService.findAll();
     }	
 }
