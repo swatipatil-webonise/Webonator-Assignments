@@ -1,7 +1,6 @@
 package com.webonise.service.impl;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +24,13 @@ public class UserServiceImpl implements UserService{
 	private UserDao userDao;
 
 	private Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+	
+	public void flushRedisCache() {
+		List<User> users = userRepository.findAll();
+		for (User user : users) {
+			userRepository.delete(user.getId());
+		}
+	}
 
 	public void updateRedisCache() {
 		List<User> users = userDao.findAll();
@@ -39,27 +45,35 @@ public class UserServiceImpl implements UserService{
 	}
 
 	public User save(User user) {
-		if (Optional.ofNullable(userDao.save(user)).isPresent()) {
+		User savedUser = userDao.save(user);
+		if (Optional.ofNullable(savedUser).isPresent()) {
 			updateRedisCache();
-			return user;
+			return savedUser;
 		} else {
 			log.error("Failed to execute save operation of object {} on database.", user);
 			throw new FailedToUpdateDatabseException("Failed to execute save operation on database.");
 		}
 	}
 
-	public User update(User user) {
-		final int RECORD_NOT_UPDATED = 0;
+	public int update(User user) {
 		if (userDao.existsById(user.getId())) {
+			int RECORD_NOT_UPDATED = 0, RECORD_UPDATED = 0;
 			if (userDao.update(user.getId(), user.getName(), user.getAge()) != RECORD_NOT_UPDATED) {
 				updateRedisCache();
-				return user;
+				return RECORD_UPDATED = 1;
 			} else {
 				log.error("Failed to execute update operation of object {} on database.", user);
-				throw new FailedToUpdateDatabseException("Failed to execute update operation on database.");
+				throw new FailedToUpdateDatabseException("Failed to update database.");
 			}
 		} else {
-			return save(user);
+			int RECORD_INSERTED = 0;
+			if (Optional.ofNullable(save(user)).isPresent()) {
+				RECORD_INSERTED = 1;
+				return RECORD_INSERTED;
+			} else {
+				log.error("Failed to update database.");
+				throw new FailedToUpdateDatabseException("Failed to update database.");
+			}
 		}
 	}
 
@@ -74,7 +88,8 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
-	public Map<String, User> findAll() {
+	public List<User> findAll() {
+		flushRedisCache();
 		updateRedisCache();
 		return userRepository.findAll();
 	}

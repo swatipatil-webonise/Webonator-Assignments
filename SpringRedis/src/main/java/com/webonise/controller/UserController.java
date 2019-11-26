@@ -1,7 +1,8 @@
 package com.webonise.controller;
 
-import java.util.Map;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +16,14 @@ import com.webonise.model.User;
 import com.webonise.service.UserService;
 
 @RestController
-@RequestMapping("/users/")
+@RequestMapping("/users")
 public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Value("${fixed.rate}")
+	private final long fixedRate = 0;
 
 	@PostMapping("/")
     public User add(@RequestBody User user) {
@@ -27,7 +31,7 @@ public class UserController {
     }
 
     @PutMapping("/")
-    public User update(@RequestBody User user) {
+    public int update(@RequestBody User user) {
     	return userService.update(user);
     }
 
@@ -36,9 +40,9 @@ public class UserController {
         return userService.deleteById(id);
     }
 
-    @Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = fixedRate)
     @GetMapping("/")
-    public Map<String, User> get() {
+    public List<User> get() {
         return userService.findAll();
     }	
 }

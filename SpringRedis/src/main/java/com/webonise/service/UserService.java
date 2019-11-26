@@ -1,9 +1,14 @@
 package com.webonise.service;
 
-import java.util.Map;
+import java.util.List;
 import com.webonise.model.User;
 
 public interface UserService {
+
+	/**
+	 * This method will flush the redis cache.
+	 */
+	public void flushRedisCache();
 
 	/**
 	 * This method updates redis cache.
@@ -22,7 +27,7 @@ public interface UserService {
 	 * @param user
 	 * @return User
 	 */
-	public User update(User user);
+	public int update(User user);
 	
 	/**
 	 * This method deletes the user with given id from database.
@@ -35,5 +40,5 @@ public interface UserService {
 	 * This method gives all key-value pairs from redis cache.  
 	 * @return Map
 	 */
-	public Map<String, User> findAll();	
+	public List<User> findAll();	
 }
