@@ -40,5 +40,10 @@ public interface UserService {
 	 * This method gives all key-value pairs from redis cache.  
 	 * @return Map
 	 */
-	public List<User> findAll();	
+	public List<User> findAll();
+	
+	/**
+	 * This method flushes and updates redis cache.
+	 */
+	public void flushAndUpdateRedisCache();
 }

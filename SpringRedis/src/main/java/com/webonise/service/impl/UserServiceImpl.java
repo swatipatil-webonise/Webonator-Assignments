@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService{
 
 	private Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 	
+	@Override
 	public void flushRedisCache() {
 		List<User> users = userRepository.findAll();
 		for (User user : users) {
@@ -49,6 +50,7 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
+	@Override
 	public User save(User user) {
 		User savedUser = userDao.save(user);
 		if (Optional.ofNullable(savedUser).isPresent()) {
@@ -60,6 +62,7 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
+	@Override
 	public int update(User user) {
 		if (userDao.existsById(user.getId())) {
 			int RECORD_NOT_UPDATED = 0, RECORD_UPDATED = 0;
@@ -82,6 +85,7 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
+	@Override
 	public Long deleteById(String id) {
 		final Long RECORD_DELETED = 1L;
 		if (userDao.deleteUserById(id) == RECORD_DELETED) {
@@ -93,10 +97,16 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
-    @Scheduled(fixedRate = fixedRate)
+	@Override
 	public List<User> findAll() {
+		flushAndUpdateRedisCache();
+		return userRepository.findAll();
+	}
+
+	@Override
+	@Scheduled(fixedRate = fixedRate)
+	public void flushAndUpdateRedisCache() {
 		flushRedisCache();
 		updateRedisCache();
-		return userRepository.findAll();
 	}
 }
