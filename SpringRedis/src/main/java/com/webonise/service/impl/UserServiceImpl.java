@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.webonise.exception.EmptyFoundException;
 import com.webonise.exception.FailedToUpdateDatabseException;
@@ -22,6 +24,9 @@ public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private UserDao userDao;
+	
+	@Value("${fixed.rate}")
+	private final long fixedRate = 0;
 
 	private Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -88,6 +93,7 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
+    @Scheduled(fixedRate = fixedRate)
 	public List<User> findAll() {
 		flushRedisCache();
 		updateRedisCache();
