@@ -30,6 +30,10 @@ public class UserServiceImpl implements UserService{
 
 	private Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 	
+	private final Long RECORD_DELETED = 1L, RECORD_NOT_UPDATED = 0L;
+	
+	private int RECORD_UPDATED = 0, RECORD_INSERTED = 0;
+	
 	@Override
 	public void flushRedisCache() {
 		List<User> users = userRepository.findAll();
@@ -38,6 +42,7 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
+	@Override
 	public void updateRedisCache() {
 		List<User> users = userDao.findAll();
 		if (Optional.ofNullable(users).isPresent()) {
@@ -54,7 +59,7 @@ public class UserServiceImpl implements UserService{
 	public User save(User user) {
 		User savedUser = userDao.save(user);
 		if (Optional.ofNullable(savedUser).isPresent()) {
-			updateRedisCache();
+			flushAndUpdateRedisCache();
 			return savedUser;
 		} else {
 			log.error("Failed to execute save operation of object {} on database.", user);
@@ -65,19 +70,17 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public int update(User user) {
 		if (userDao.existsById(user.getId())) {
-			int RECORD_NOT_UPDATED = 0, RECORD_UPDATED = 0;
 			if (userDao.update(user.getId(), user.getName(), user.getAge()) != RECORD_NOT_UPDATED) {
-				updateRedisCache();
+				flushAndUpdateRedisCache();
 				return RECORD_UPDATED = 1;
 			} else {
 				log.error("Failed to execute update operation of object {} on database.", user);
 				throw new FailedToUpdateDatabseException("Failed to update database.");
 			}
 		} else {
-			int RECORD_INSERTED = 0;
 			if (Optional.ofNullable(save(user)).isPresent()) {
-				RECORD_INSERTED = 1;
-				return RECORD_INSERTED;
+				flushAndUpdateRedisCache();
+				return RECORD_INSERTED = 1;
 			} else {
 				log.error("Failed to update database.");
 				throw new FailedToUpdateDatabseException("Failed to update database.");
@@ -87,9 +90,8 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public Long deleteById(String id) {
-		final Long RECORD_DELETED = 1L;
 		if (userDao.deleteUserById(id) == RECORD_DELETED) {
-			updateRedisCache();
+			flushAndUpdateRedisCache();
 			return RECORD_DELETED;
 		} else {
 			log.error("User with given id {} not found.", id);
@@ -99,8 +101,13 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public List<User> findAll() {
-		flushAndUpdateRedisCache();
-		return userRepository.findAll();
+		List<User> users = userRepository.findAll();
+		if(Optional.ofNullable(users).isPresent()) {
+			return users;
+		} else {
+			updateRedisCache();
+			return userRepository.findAll();
+		}
 	}
 
 	@Override

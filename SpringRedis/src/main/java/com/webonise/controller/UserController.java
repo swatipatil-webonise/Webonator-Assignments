@@ -17,10 +17,10 @@ import com.webonise.service.UserService;
 @RequestMapping("/users")
 public class UserController {
 	
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
 	
-    @PostMapping("/")
+	@PostMapping("/")
     public User add(@RequestBody User user) {
         return userService.save(user);
     }
