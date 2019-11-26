@@ -19,13 +19,13 @@ import com.webonise.service.UserService;
 @RequestMapping("/users")
 public class UserController {
 	
-	@Autowired
-	private UserService userService;
+    @Autowired
+    private UserService userService;
 	
-	@Value("${fixed.rate}")
-	private final long fixedRate = 0;
+    @Value("${fixed.rate}")
+    private final long fixedRate = 0;
 
-	@PostMapping("/")
+    @PostMapping("/")
     public User add(@RequestBody User user) {
         return userService.save(user);
     }
