@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
-import com.webonise.exception.EmptyFoundException;
-import com.webonise.exception.NotFoundException;
 import com.webonise.model.User;
 import com.webonise.repository.UserRepository;
 
@@ -25,6 +23,8 @@ public class UserRepositoryImpl implements UserRepository{
 	private HashOperations hashOperations;
 	
 	private Logger log = LoggerFactory.getLogger(UserRepositoryImpl.class);
+	
+	private final Long USER_DELETED = 1l, USER_NOT_DELETED = 0l;
 		
 	public UserRepositoryImpl(RedisTemplate<String, User> redisTemplate) {
 		this.redisTemplate = redisTemplate;
@@ -38,7 +38,7 @@ public class UserRepositoryImpl implements UserRepository{
 			return users;
 		} else {
 			log.error("Empty redis cache found.");
-			throw new EmptyFoundException("Empty redis cache found.");
+			return users;
 		}
 	}
 
@@ -49,12 +49,11 @@ public class UserRepositoryImpl implements UserRepository{
 
 	@Override
 	public Long delete(String id) {
-		final Long USER_DELETED = 1l;
 		if (hashOperations.delete(OBJECT_KEY, id) == USER_DELETED) {
 			return USER_DELETED;
 		} else {
 			log.error("User with given id {} not found.", id);
-			throw new NotFoundException("User not found.");
+			return USER_NOT_DELETED;
 		}
 	}	
 }
