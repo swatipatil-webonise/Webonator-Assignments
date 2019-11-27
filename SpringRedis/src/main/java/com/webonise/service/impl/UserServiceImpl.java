@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	@Scheduled(fixedRateString = (String) "${fixed.rate}")
+	@Scheduled(fixedRateString = (String) "${fixedRate.in.milliseconds}")
 	public void flushAndUpdateRedisCache() {
 		flushRedisCache();
 		updateRedisCache();
