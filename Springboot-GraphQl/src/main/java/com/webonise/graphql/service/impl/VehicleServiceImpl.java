@@ -5,6 +5,7 @@ import com.webonise.graphql.exception.EmptyFoundException;
 import com.webonise.graphql.exception.NotFoundException;
 import com.webonise.graphql.exception.UnauthorizedRequestFoundException;
 import com.webonise.graphql.repository.VehicleRepository;
+import com.webonise.graphql.service.AuthorizationService;
 import com.webonise.graphql.service.VehicleService;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.servlet.GraphQLContext;
@@ -23,11 +24,14 @@ public class VehicleServiceImpl implements VehicleService {
 	@Autowired
 	private VehicleRepository vehicleRepository;
 	
+	@Autowired
+	private AuthorizationService authorizationService;
+	
 	@Value("${app.authentication.key}")
 	private String APP_AUTH_KEY; 
 
 	private Logger log = LoggerFactory.getLogger(VehicleServiceImpl.class);
-
+	
 	@Override
 	public Vehicle createVehicle(String type, String modelCode, String brandName, DataFetchingEnvironment environment) {
 		verifyAuthKey(environment);
@@ -90,9 +94,8 @@ public class VehicleServiceImpl implements VehicleService {
 		if (AUTH_KEY == null) {
 			log.error("Authentication token not found.");
 			throw new UnauthorizedRequestFoundException(401, "Unauthorized request found.");
-		} else if (!(AUTH_KEY.equals(APP_AUTH_KEY))) {
-			log.error("Unauthorized request found.");
-			throw new UnauthorizedRequestFoundException(401, "Unauthorized request found.");
+		} else {
+			authorizationService.validateAuthKey(AUTH_KEY);
 		}
 	}
 }
