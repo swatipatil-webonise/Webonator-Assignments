@@ -22,7 +22,7 @@ public interface VehicleService {
 	 * @param environment
 	 * @return 1 If Deleted else 0
 	 */
-	int deleteVehicle(int id, DataFetchingEnvironment environment);
+	long deleteVehicle(int id, DataFetchingEnvironment environment);
 	
 	/**
 	 * This method will update vehicle with given id to given property values.
@@ -56,4 +56,21 @@ public interface VehicleService {
 	 * @param environment
 	 */
 	void verifyAuthKey(DataFetchingEnvironment environment);
+	
+	/**
+	 * This method will flush the redis cache.
+	 */
+	public void flushRedisCache();
+
+	/**
+	 * This method updates redis cache.
+	 */
+	public void updateRedisCache();
+	
+	/**
+	 * This method flushes and updates redis cache.
+	 */
+	public void flushAndUpdateRedisCache();
+
+
 }

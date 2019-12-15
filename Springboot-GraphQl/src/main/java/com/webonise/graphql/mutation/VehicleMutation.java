@@ -18,7 +18,7 @@ public class VehicleMutation implements GraphQLMutationResolver {
     }	
     
     public int deleteVehicle(int id, DataFetchingEnvironment environment) {
-    	return vehicleService.deleteVehicle(id, environment);
+    	return (int) vehicleService.deleteVehicle(id, environment);
     }
     
     public Vehicle updateVehicle(int id, String type,String modelCode, String brandName, DataFetchingEnvironment environment) {
