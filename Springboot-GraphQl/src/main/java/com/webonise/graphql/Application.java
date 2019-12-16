@@ -8,7 +8,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-
 import com.webonise.graphql.entity.Vehicle;
 import com.webonise.graphql.repository.VehicleRedisRepository;
 import com.webonise.graphql.repository.impl.VehicleRedisRepositoryImpl;

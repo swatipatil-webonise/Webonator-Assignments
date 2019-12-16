@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import com.webonise.graphql.entity.Vehicle;
@@ -12,7 +13,8 @@ import com.webonise.graphql.repository.VehicleRedisRepository;
 
 public class VehicleRedisRepositoryImpl implements VehicleRedisRepository {
 	
-	private String OBJECT_KEY = "VEHICLE-1";
+	@Value("${app.object.key}")
+	private String OBJECT_KEY;
 
 	private RedisTemplate<Integer, Vehicle> redisTemplate;
 

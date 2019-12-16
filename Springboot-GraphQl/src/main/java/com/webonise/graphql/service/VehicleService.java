@@ -39,15 +39,15 @@ public interface VehicleService {
 	 * This method will retrieve list of vehicle from Vehicle table.
 	 * @param count
 	 * @param environment
-	 * @return
-	 */
+	 * @return List<Vehicle>
+	 */ 
 	List<Vehicle> getVehicles(int count, DataFetchingEnvironment environment);
 	
 	/**
 	 * This method will retrieve vehicle with given id from Vehicle table.
 	 * @param id
 	 * @param environment
-	 * @return
+	 * @return Vehicle
 	 */
 	Vehicle getVehicle(int id, DataFetchingEnvironment environment);
 	
@@ -71,6 +71,4 @@ public interface VehicleService {
 	 * This method flushes and updates redis cache.
 	 */
 	public void flushAndUpdateRedisCache();
-
-
 }

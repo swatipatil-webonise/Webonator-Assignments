@@ -1,26 +1,26 @@
 package com.webonise.graphql.service.impl;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 import com.webonise.graphql.entity.Vehicle;
 import com.webonise.graphql.exception.EmptyFoundException;
 import com.webonise.graphql.exception.FailedToUpdateDatabseException;
 import com.webonise.graphql.exception.NotFoundException;
 import com.webonise.graphql.exception.UnauthorizedRequestFoundException;
+import com.webonise.graphql.exception.UpdateRedisException;
 import com.webonise.graphql.repository.VehicleRedisRepository;
 import com.webonise.graphql.repository.VehicleRepository;
 import com.webonise.graphql.service.AuthorizationService;
 import com.webonise.graphql.service.VehicleService;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.servlet.GraphQLContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
@@ -34,10 +34,7 @@ public class VehicleServiceImpl implements VehicleService {
 	@Autowired
 	private AuthorizationService authorizationService;
 
-	@Value("${app.authentication.key}")
-	private String APP_AUTH_KEY;
-	
-	private final Long RECORD_DELETED = 1L, RECORD_NOT_UPDATED = 0L;
+	private final Long RECORD_DELETED = 1L;
 
 	private Logger log = LoggerFactory.getLogger(VehicleServiceImpl.class);
 
@@ -127,7 +124,13 @@ public class VehicleServiceImpl implements VehicleService {
 	@Override
 	public Vehicle getVehicle(int id, DataFetchingEnvironment environment) {
 		verifyAuthKey(environment);
-		return vehicleRedisRepository.get(id);
+		Vehicle vehicle = vehicleRedisRepository.get(id);
+		if (Optional.ofNullable(vehicle).isPresent()) {
+			return vehicle;
+		} else {
+			log.error("Vehicle with id {} is not present in redis cache.", id);
+			throw new UpdateRedisException(304, "Redis needs to be updated.");
+		}
 	}
 
 	@Override
@@ -135,7 +138,7 @@ public class VehicleServiceImpl implements VehicleService {
 		final String AUTH_KEY = ((GraphQLContext) environment.getContext()).getHttpServletRequest().get()
 				.getHeader("Auth-Key");
 		if (AUTH_KEY == null) {
-			log.error("Authentication token not found.");
+			log.error("Authorization token not found.");
 			throw new UnauthorizedRequestFoundException(401, "Unauthorized request found.");
 		} else {
 			authorizationService.validateAuthKey(AUTH_KEY);
