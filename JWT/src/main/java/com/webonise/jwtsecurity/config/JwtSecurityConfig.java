@@ -1,7 +1,7 @@
 package com.webonise.jwtsecurity.config;
 
-import com.webonise.jwtsecurity.security.JwtAuthenticationProvider;
-import com.webonise.jwtsecurity.security.JwtAuthenticationTokenFilter;
+import com.webonise.jwtsecurity.security.jwt.JwtAuthenticationProvider;
+import com.webonise.jwtsecurity.security.jwt.JwtAuthenticationTokenFilter;
 import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,8 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
         JwtAuthenticationTokenFilter filter = new JwtAuthenticationTokenFilter();
         filter.setAuthenticationManager(authenticationManager());
         filter.setAuthenticationSuccessHandler(
-                (httpServletRequest, httpServletResponse, authentication) -> log.info("Successfully Authenticated"));
+                (httpServletRequest, httpServletResponse, authentication) -> log
+                        .info("Successfully Authenticated"));
         return filter;
     }
 

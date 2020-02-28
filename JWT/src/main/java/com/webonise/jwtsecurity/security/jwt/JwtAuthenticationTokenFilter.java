@@ -1,12 +1,19 @@
-package com.webonise.jwtsecurity.security;
+package com.webonise.jwtsecurity.security.jwt;
 
 import com.webonise.jwtsecurity.model.JwtAuthenticationToken;
+import com.webonise.jwtsecurity.security.cryptography.RSAUtil;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -25,6 +32,9 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
 
     private static final String FILTER_URL_PATTERN = "/say-hello/**";
 
+    @Autowired
+    private RSAUtil rsaUtil;
+
     public JwtAuthenticationTokenFilter() {
         super(FILTER_URL_PATTERN);
     }
@@ -37,7 +47,12 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
         if (!Optional.ofNullable(header).isPresent() || !header.startsWith(TOKEN_START_STR)) {
             throw new RuntimeException("JWT Token is missing");
         }
-        String authenticationToken = header.substring(TOKEN_START_STR_LEN);
+        String authenticationToken = null;
+        try {
+            authenticationToken = rsaUtil.decrypt(header.substring(TOKEN_START_STR_LEN));
+        } catch (IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
         JwtAuthenticationToken token = new JwtAuthenticationToken(authenticationToken);
         return getAuthenticationManager().authenticate(token);
     }

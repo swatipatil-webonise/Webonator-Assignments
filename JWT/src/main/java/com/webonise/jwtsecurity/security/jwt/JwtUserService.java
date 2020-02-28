@@ -1,4 +1,4 @@
-package com.webonise.jwtsecurity.security;
+package com.webonise.jwtsecurity.security.jwt;
 
 import com.webonise.jwtsecurity.model.JwtUser;
 import java.util.ArrayList;

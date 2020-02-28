@@ -1,4 +1,4 @@
-package com.webonise.jwtsecurity.security;
+package com.webonise.jwtsecurity.security.jwt;
 
 import com.webonise.jwtsecurity.model.JwtAuthenticationToken;
 import com.webonise.jwtsecurity.model.JwtUser;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 public class JwtAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
     @Autowired
-    private JwtGeneratorAndValidator validator;
+    private JwtGeneratorAndValidator jwtValidator;
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails,
@@ -36,7 +36,7 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
             throws AuthenticationException {
         JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) usernamePasswordAuthenticationToken;
         String token = jwtAuthenticationToken.getToken();
-        JwtUser jwtUser = validator.validate(token);
+        JwtUser jwtUser = jwtValidator.validate(token);
         if (!Optional.ofNullable(jwtUser).isPresent()) {
             throw new RuntimeException("JWT Token is incorrect");
         }

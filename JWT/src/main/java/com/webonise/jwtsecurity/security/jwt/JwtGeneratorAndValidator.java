@@ -1,7 +1,8 @@
-package com.webonise.jwtsecurity.security;
+package com.webonise.jwtsecurity.security.jwt;
 
 import com.webonise.jwtsecurity.model.JwtUser;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
@@ -22,8 +23,18 @@ public class JwtGeneratorAndValidator {
 
     private static final String USER_ROLE = "role";
 
+    private static final String ISSUER = "issuer";
+
+    private static final String AUDIENCE = "audience";
+
     @Value("${jwt.secret.key}")
     private String SECRET_KEY;
+
+    @Value("${jwt.claims.issuer}")
+    private String issuer;
+
+    @Value("${jwt.claims.audience}")
+    private String audience;
 
     @Autowired
     public JwtUserService userService;
@@ -34,6 +45,8 @@ public class JwtGeneratorAndValidator {
                 .setSubject(jwtUser.getUserName());
         claims.put(USER_ID, String.valueOf(jwtUser.getId()));
         claims.put(USER_ROLE, jwtUser.getRole());
+        claims.put(ISSUER, issuer);
+        claims.put(AUDIENCE, audience);
         Date expirationTime = new Date();
         expirationTime.setMinutes(expirationTime.getMinutes() + 2);
         return Jwts.builder()
@@ -54,11 +67,11 @@ public class JwtGeneratorAndValidator {
                     .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(token)
                     .getBody();
-            if (isTokenExpired(body)) {
-                throw new RuntimeException("Token expired");
-            } else {
-                return new JwtUser(body.getSubject(), Long.parseLong((String) body.get(USER_ID)), (String) body.get(USER_ROLE));
-            }
+            isTokenExpired(body);
+            return new JwtUser(body.getSubject(), Long.parseLong((String) body.get(USER_ID)),
+                (String) body.get(USER_ROLE));
+        } catch (ExpiredJwtException ex) {
+            throw new RuntimeException("Token expired");
         } catch (Exception ex) {
             log.error("Exception occurred while parsing token.", ex);
         }
