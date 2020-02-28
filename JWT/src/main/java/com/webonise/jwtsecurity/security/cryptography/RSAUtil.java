@@ -72,16 +72,16 @@ public class RSAUtil {
         return cipher.doFinal(data.getBytes());
     }
 
-    public String decrypt(byte[] data, PrivateKey privateKey)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance(padding);
-        cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        return new String(cipher.doFinal(data));
-    }
+//    public String decrypt(byte[] data)
+//            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+//
+//    }
 
     public String decrypt(String data)
             throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
-        return decrypt(Base64.getDecoder().decode(data.getBytes()),
-                getPrivateKey(base64PrivateKey));
+        Cipher cipher = Cipher.getInstance(padding);
+        cipher.init(Cipher.DECRYPT_MODE, getPrivateKey(base64PrivateKey));
+        return new String(cipher.doFinal(Base64.getDecoder().decode(data.getBytes())));
+//        return decrypt();
     }
 }

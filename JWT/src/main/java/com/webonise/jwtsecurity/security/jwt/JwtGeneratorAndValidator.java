@@ -36,6 +36,9 @@ public class JwtGeneratorAndValidator {
     @Value("${jwt.claims.audience}")
     private String audience;
 
+    @Value("${jwt.ttl}")
+    private int TTl;
+
     @Autowired
     public JwtUserService userService;
 
@@ -48,7 +51,7 @@ public class JwtGeneratorAndValidator {
         claims.put(ISSUER, issuer);
         claims.put(AUDIENCE, audience);
         Date expirationTime = new Date();
-        expirationTime.setMinutes(expirationTime.getMinutes() + 2);
+        expirationTime.setMinutes(expirationTime.getMinutes() + TTl);
         return Jwts.builder()
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
